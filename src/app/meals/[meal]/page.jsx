@@ -2,9 +2,13 @@ import React from "react";
 import classes from "./page.module.css";
 import { getMeal } from "@/utils/meals";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 const MealDetailsPage = ({ params }) => {
   const meal = getMeal(React.use(params).meal);
+  if (!meal) {
+    return notFound();
+  }
   meal.instructions = meal.instructions.replace(/\n/g, "<br />");
   return (
     <>
