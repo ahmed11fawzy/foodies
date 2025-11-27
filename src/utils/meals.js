@@ -18,8 +18,12 @@ export async function saveMeal(meal) {
   meal.slug = slugify(meal.title, { lower: true });
   meal.summary = xss(meal.summary);
   meal.instructions = xss(meal.instructions);
-  const fileName = await saveImage(meal, meal.title);
-  meal.image = `/images/${fileName}`;
+  const file = await saveImage(meal, meal.title);
+
+  // ? use file system path
+  /*  meal.image = `/images/${fileName}`;*/
+  // ? use cloudinary url
+  meal.image = file.secure_url;
   // save the meal
   db.prepare(
     `

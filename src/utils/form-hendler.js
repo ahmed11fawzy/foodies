@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { saveMeal } from "./meals";
+import { revalidatePath } from "next/cache";
 
 const validator = (value) => value.trim() === "" || !value;
 
@@ -20,10 +21,11 @@ export async function handleSubmit(prev, formData) {
     validator(meal.title) ||
     validator(meal.summary) ||
     validator(meal.instructions) ||
-    !creator_email.includes("@")
+    !meal.creator_email.includes("@")
   ) {
     return { message: "Please fill in all the fields" };
   }
   await saveMeal(meal);
+  revalidatePath("/meals");
   redirect("/meals");
 }
