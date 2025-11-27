@@ -1,4 +1,7 @@
 import sql from "better-sqlite3";
+import slugify from "slugify";
+import xss from "xss";
+import saveImage from "./store-image";
 const db = sql("meals.db");
 
 export async function getMeals() {
@@ -9,4 +12,26 @@ export async function getMeals() {
 
 export function getMeal(slug) {
   return db.prepare("SELECT * FROM meals WHERE slug = ?").get(slug);
+}
+
+export async function saveMeal(meal) {
+  meal.slug = slugify(meal.title, { lower: true });
+  meal.summary = xss(meal.summary);
+  meal.instructions = xss(meal.instructions);
+  const fileName = await saveImage(meal, meal.title);
+  meal.image = `/images/${fileName}`;
+  // save the meal
+  db.prepare(
+    `
+      INSERT INTO meals (slug, title, image, summary, instructions, creator, creator_email) VALUES (
+         @slug,
+         @title,
+         @image,
+         @summary,
+         @instructions,
+         @creator,
+         @creator_email
+      )
+   `
+  ).run(meal);
 }
