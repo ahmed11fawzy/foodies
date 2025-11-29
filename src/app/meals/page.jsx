@@ -5,6 +5,10 @@ import MealsGrid from "@/components/meals/meal-grid";
 import { getMeals } from "@/utils/meals";
 import Loading from "../loading.module.css";
 
+export const metadata = {
+  title: "All Meals",
+  description: "A list of all delicious meals shared by our community.",
+};
 const Meals = async () => {
   const meals = await getMeals();
   return <MealsGrid meals={meals} />;

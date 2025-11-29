@@ -3,7 +3,18 @@ import classes from "./page.module.css";
 import { getMeal } from "@/utils/meals";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-
+// meta data for dynamic meal details page
+export async function generateMetadata({ params: awaitedParams }) {
+  const params = await awaitedParams;
+  const meal = getMeal(params.meal);
+  if (!meal) {
+    return notFound();
+  }
+  return {
+    title: meal.title,
+    description: meal.summary,
+  };
+}
 const MealDetailsPage = ({ params }) => {
   const meal = getMeal(React.use(params).meal);
   if (!meal) {
